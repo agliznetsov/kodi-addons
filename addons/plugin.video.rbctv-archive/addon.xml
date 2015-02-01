@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.rbctv-archive" name="RBC TV Video Archive" version="1.0.0" provider-name="Andrey Gliznetsov">
+    <requires>
+        <import addon="xbmc.python" version="2.1.0"/>
+        <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="addon.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en">RBC TV Video Archive</summary>
+        <description lang="en">Provides access to RBC TV video archive(http://rbctv.rbc.ru/archive)</description>
+        <platform>all</platform>
+        <license>GNU GPL v2.0</license>
+        <source>https://github.com/DmitrySandalov/xbmc-repo</source>
+    </extension>
+</addon>
