@@ -6,9 +6,7 @@ import urllib
 import urlparse
 import time
 
-import xbmc
-import xbmcgui
-import xbmcplugin
+import xbmc, xbmcaddon, xbmcgui, xbmcplugin
 from rbc import RbcClient
 
 
@@ -22,10 +20,13 @@ def addItem(text1, url, isFolder):
 
 
 def root():
-    li = xbmcgui.ListItem('[COLOR red]' + '[НОВОСТИ]' + '[/COLOR]')
-    li.setProperty('IsPlayable', 'true')
-    xbmcplugin.addDirectoryItem(handle=addonHandle, url=buildUrl({'mode': 'favorites'}), listitem=li, isFolder=False)
+    li = xbmcgui.ListItem('[COLOR red]' + '[Favorites]' + '[/COLOR]')
+    xbmcplugin.addDirectoryItem(handle=addonHandle, url=buildUrl({'mode': 'favorites'}), listitem=li, isFolder=True)
 
+    li = xbmcgui.ListItem('[Programs]')
+    xbmcplugin.addDirectoryItem(handle=addonHandle, url=buildUrl({'mode': 'programs'}), listitem=li, isFolder=True)
+
+def programs():
     for it in client.programs():
         addItem(it['text'], buildUrl({'path': it['path'], 'mode': 'folder'}), True)
 
@@ -37,8 +38,13 @@ def folder(path):
         url = buildUrl({'path': it['path'], 'mode': 'file', 'text': it['text'].encode('utf-8')})
         xbmcplugin.addDirectoryItem(handle=addonHandle, url=url, listitem=li, isFolder=False)
 
-
 def favorites():
+    fav = addon.getSetting('favorites')
+    favorites = fav.split(' ')
+    for f in favorites:
+        addItem(f, buildUrl({'path': '/archive/' + f, 'mode': 'folder'}), True)
+
+def news():
     playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
     xbmc.PlayList.clear(playlist)
     for it in client.favorites():
@@ -66,15 +72,18 @@ path = args.get('path', [None])[0]
 text = args.get('text', [''])[0].decode('utf-8')
 mode = args.get('mode', ['root'])[0]
 
+addon = xbmcaddon.Addon(id='plugin.video.rbctv-archive')
 client = RbcClient()
 start_time = time.time()
 
 if mode == 'root':
     root()
-elif mode == 'folder':
-    folder(path)
 elif mode == 'favorites':
     favorites()
+elif mode == 'programs':
+    programs()
+elif mode == 'folder':
+    folder(path)
 else:
     file(text, path)
 

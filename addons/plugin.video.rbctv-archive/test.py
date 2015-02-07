@@ -9,8 +9,8 @@ client = RbcClient()
 #     for file in items2:
 #         print file['path']
 
-print client.files('/archive/Auto/562949993842568.shtml')
+# print client.files('/archive/Auto/562949993842568.shtml')
 
-# items = client.favorites()
-# for item in items:
-#     print item
+items = client.programs()
+for item in items:
+    print item
