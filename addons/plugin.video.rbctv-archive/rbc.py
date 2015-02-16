@@ -56,18 +56,30 @@ class RbcClient:
         return res
 
 
-    def files(self, path):
+    def file(self, path):
         html = urllib2.urlopen(HOST + path).read()
         doc = BeautifulSoup(html)
-        list = doc.select('div.info_block p a')
-        res = []
+
+        # list = doc.select("div.info_block p.important2 a")
+        # for item in list:
+        #     href = item.attrs['href']
+        #     if href.endswith('.mp4') or href.endswith('.wmv'):
+        #         print {'text': href, 'path': href}
+
+        list = doc.select("div.video_file")
         for item in list:
-            href = item.attrs['href']
-            if href.endswith('.wmv'):
-                m = re.search('(\d\d\d\d\/\d\d\/\d\d).*?(\d\d\d\d)', href)
-                date = m.group(1).replace('/', '-')
-                time = m.group(2)
-                res.append({'text': href, 'path': href, 'date': date, 'time': time})
-        return res
+            href = item.text
+            print href
+            return {'text': href, 'path': href}
+
+        list = doc.select('script[type="text/javascript"]')
+        for item in list:
+            m = re.search("file: '(.+)'", item.text)
+            if (m):
+                href = m.group(1)
+                print href
+                return {'text': href, 'path': href}
+
+        return {}
 
 

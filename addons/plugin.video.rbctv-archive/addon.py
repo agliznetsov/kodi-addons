@@ -6,7 +6,10 @@ import urllib
 import urlparse
 import time
 
-import xbmc, xbmcaddon, xbmcgui, xbmcplugin
+import xbmc
+import xbmcaddon
+import xbmcgui
+import xbmcplugin
 from rbc import RbcClient
 
 
@@ -26,6 +29,7 @@ def root():
     li = xbmcgui.ListItem('[Programs]')
     xbmcplugin.addDirectoryItem(handle=addonHandle, url=buildUrl({'mode': 'programs'}), listitem=li, isFolder=True)
 
+
 def programs():
     for it in client.programs():
         addItem(it['text'], buildUrl({'path': it['path'], 'mode': 'folder'}), True)
@@ -38,11 +42,13 @@ def folder(path):
         url = buildUrl({'path': it['path'], 'mode': 'file', 'text': it['text'].encode('utf-8')})
         xbmcplugin.addDirectoryItem(handle=addonHandle, url=url, listitem=li, isFolder=False)
 
+
 def favorites():
     fav = addon.getSetting('favorites')
     favorites = fav.split(' ')
     for f in favorites:
         addItem(f, buildUrl({'path': '/archive/' + f, 'mode': 'folder'}), True)
+
 
 def news():
     playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
@@ -56,10 +62,10 @@ def news():
 
 
 def file(text, path):
-    for it in client.files(path):
-        li = xbmcgui.ListItem(label=text, path=it['path'])
-        xbmcplugin.setResolvedUrl(addonHandle, True, li)
-        # addItem(it['path'], it['path'], False)
+    it = client.file(path)
+    li = xbmcgui.ListItem(label=text, path=it['path'])
+    xbmcplugin.setResolvedUrl(addonHandle, True, li)
+    # addItem(it['path'], it['path'], False)
 
 
 baseUrl = sys.argv[0]
